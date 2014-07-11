@@ -16,4 +16,6 @@ Gem::Specification.new do |s|
   s.add_dependency 'jekyll'
   s.add_dependency 'nokogiri'
   s.add_dependency 'pygments.rb'
+
+  s.add_development_dependency 'github-linguist'
 end
