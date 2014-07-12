@@ -3,6 +3,7 @@ require 'find'
 
 module York
   class Archiver < Jekyll::Generator
+
     class Example < Jekyll::StaticFile
       def path
         York.source_dir(@site).join(@dir, @name).to_s
@@ -43,14 +44,13 @@ module York
     end
 
     def generate_archive(site, source, ext)
-      target_dir = York.target_dir(site)
-      name       = source.basename
-      archive    = target_dir.join(name, name.to_s + ext)
-      relative   = archive.relative_path_from(Pathname.new(site.dest))
+      basename = source.basename
+      archive  = York.path_to_archive(site, basename, ext)
+      relative = archive.relative_path_from(Pathname.new(site.dest))
 
       FileUtils.mkdir_p(archive.parent)
       FileUtils.rm_rf(archive)
-      FileUtils.cd(source.parent) { yield name, archive }
+      FileUtils.cd(source.parent) { yield basename, archive }
 
       file = Null.new(site, site.source, relative.parent.to_s, relative.basename.to_s)
       site.static_files << file

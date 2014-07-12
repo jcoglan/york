@@ -2,12 +2,12 @@ module York
 
   class ArchiveUrlTag < Liquid::Tag
     def render(context)
-      example_name = context.registers[EXAMPLE_REGISTER] || ''
-      site         = context.registers[:site]
-      site_dest    = Pathname.new(site.dest)
-      full_path    = York.target_dir(site).join(example_name, example_name + extension)
+      example   = context.registers[EXAMPLE_REGISTER] || ''
+      site      = context.registers[:site]
+      site_dest = Pathname.new(site.dest)
+      pathname  = York.path_to_archive(site, example, extension)
 
-      '/' + full_path.relative_path_from(site_dest).to_s
+      '/' + pathname.relative_path_from(site_dest).to_s
     end
   end
 

@@ -64,4 +64,9 @@ module York
     Pathname.new(site.dest).join(examples_dir)
   end
 
+  def self.path_to_archive(site, example, extension)
+    target_dir(site).join(example, example.to_s + extension)
+  end
+
+
 end
