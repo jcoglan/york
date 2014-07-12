@@ -9,7 +9,7 @@ github_username:  jekyll
 
 # Build settings
 markdown: redcarpet
-permalink: pretty
+permalink: /:year/:month/:day/:title
 
 redcarpet:
   extensions: [smart]

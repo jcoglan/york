@@ -4,18 +4,25 @@ require 'pygments.rb'
 
 module York
 
-  EXAMPLE_REGISTER = :york_example_name
-
   root = File.expand_path('../york', __FILE__)
+
+  require File.join(root, 'archiver')
   require File.join(root, 'highlighter')
   require File.join(root, 'examples_tag')
   require File.join(root, 'show_tag')
+  require File.join(root, 'file_url_tag')
+  require File.join(root, 'archive_url_tag')
 
-  PARAM_SYNTAX = /("[^"]*"|[^ =]+)(?:=("[^"]*"|[^ =]+))?/i
+  EXAMPLE_REGISTER = :york_example_name
+
+  PARAM_SYNTAX = /("[^"]*"|[^ =]+)(?:=("[^"]*"|[^ =]+))?/
   INT_SYNTAX   = /^[1-9][0-9]*$/
 
   SOURCE_DIR = '_examples'
   TARGET_DIR = 'examples'
+
+  TAR_EXTENSION = '.tgz'
+  ZIP_EXTENSION = '.zip'
 
   def self.guess_language(pathname)
     require 'linguist/file_blob'
@@ -50,6 +57,11 @@ module York
   def self.source_dir(site)
     examples_dir = site.config.fetch('york', {}).fetch('source', SOURCE_DIR)
     Pathname.new(site.source).join(examples_dir)
+  end
+
+  def self.target_dir(site)
+    examples_dir = site.config.fetch('york', {}).fetch('destination', TARGET_DIR)
+    Pathname.new(site.dest).join(examples_dir)
   end
 
 end
