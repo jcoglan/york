@@ -1,6 +1,7 @@
 require 'nokogiri'
 require 'pathname'
 require 'pygments.rb'
+require 'shellwords'
 
 module York
 
@@ -12,6 +13,7 @@ module York
   require File.join(root, 'show_tag')
   require File.join(root, 'file_url_tag')
   require File.join(root, 'archive_url_tag')
+  require File.join(root, 'git', 'diff')
 
   EXAMPLE_REGISTER = :york_example_name
 

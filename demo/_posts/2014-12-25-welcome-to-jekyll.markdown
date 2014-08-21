@@ -20,6 +20,8 @@ Jekyll also offers powerful support for [code snippets][snippet]:
 
 You can download this files in [tar][tar] or [zip][zip] format.
 
+{% show d36d572.diff from=21 to=41 %}
+
 Check out the [Jekyll docs][jekyll] for more info on how to get the most out of
 Jekyll. File all bugs/feature requests at [Jekyll's GitHub repo][jekyll-gh].
 

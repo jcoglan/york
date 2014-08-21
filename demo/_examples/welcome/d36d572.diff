@@ -1,0 +1,95 @@
+commit d36d57220cf1cc920f7a8afd0386478e2d553f25
+Author: James Coglan <jcoglan@gmail.com>
+Date:   Sat Jul 12 01:30:55 2014 +0100
+
+    Extract the logic for determining the path to an archive file.
+
+diff --git a/lib/york.rb b/lib/york.rb
+index 6d988be..0dbe489 100644
+--- a/lib/york.rb
++++ b/lib/york.rb
+@@ -64,4 +64,9 @@ module York
+     Pathname.new(site.dest).join(examples_dir)
+   end
+ 
++  def self.path_to_archive(site, example, extension)
++    target_dir(site).join(example, example.to_s + extension)
++  end
++
++
+ end
+diff --git a/lib/york/archive_url_tag.rb b/lib/york/archive_url_tag.rb
+index 158285f..0e3817a 100644
+--- a/lib/york/archive_url_tag.rb
++++ b/lib/york/archive_url_tag.rb
+@@ -2,12 +2,12 @@ module York
+ 
+   class ArchiveUrlTag < Liquid::Tag
+     def render(context)
+-      example_name = context.registers[EXAMPLE_REGISTER] || ''
+-      site         = context.registers[:site]
+-      site_dest    = Pathname.new(site.dest)
+-      full_path    = York.target_dir(site).join(example_name, example_name + extension)
++      example   = context.registers[EXAMPLE_REGISTER] || ''
++      site      = context.registers[:site]
++      site_dest = Pathname.new(site.dest)
++      pathname  = York.path_to_archive(site, example, extension)
+ 
+-      '/' + full_path.relative_path_from(site_dest).to_s
++      '/' + pathname.relative_path_from(site_dest).to_s
+     end
+   end
+ 
+diff --git a/lib/york/archiver.rb b/lib/york/archiver.rb
+index c2b1b62..35707e9 100644
+--- a/lib/york/archiver.rb
++++ b/lib/york/archiver.rb
+@@ -3,6 +3,7 @@ require 'find'
+ 
+ module York
+   class Archiver < Jekyll::Generator
++
+     class Example < Jekyll::StaticFile
+       def path
+         York.source_dir(@site).join(@dir, @name).to_s
+@@ -43,14 +44,13 @@ module York
+     end
+ 
+     def generate_archive(site, source, ext)
+-      target_dir = York.target_dir(site)
+-      name       = source.basename
+-      archive    = target_dir.join(name, name.to_s + ext)
+-      relative   = archive.relative_path_from(Pathname.new(site.dest))
++      basename = source.basename
++      archive  = York.path_to_archive(site, basename, ext)
++      relative = archive.relative_path_from(Pathname.new(site.dest))
+ 
+       FileUtils.mkdir_p(archive.parent)
+       FileUtils.rm_rf(archive)
+-      FileUtils.cd(source.parent) { yield name, archive }
++      FileUtils.cd(source.parent) { yield basename, archive }
+ 
+       file = Null.new(site, site.source, relative.parent.to_s, relative.basename.to_s)
+       site.static_files << file
+diff --git a/lib/york/file_url_tag.rb b/lib/york/file_url_tag.rb
+index cfefa54..03a19ce 100644
+--- a/lib/york/file_url_tag.rb
++++ b/lib/york/file_url_tag.rb
+@@ -6,12 +6,12 @@ module York
+     end
+ 
+     def render(context)
+-      example_name = context.registers[EXAMPLE_REGISTER] || ''
+-      site         = context.registers[:site]
+-      site_dest    = Pathname.new(site.dest)
+-      full_path    = York.target_dir(site).join(example_name, @filename)
++      example   = context.registers[EXAMPLE_REGISTER] || ''
++      site      = context.registers[:site]
++      site_dest = Pathname.new(site.dest)
++      pathname  = York.target_dir(site).join(example, @filename)
+ 
+-      '/' + full_path.relative_path_from(site_dest).to_s
++      '/' + pathname.relative_path_from(site_dest).to_s
+     end
+   end
+ 
