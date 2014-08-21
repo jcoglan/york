@@ -79,12 +79,9 @@ module York
 
       table.css('pre').each_with_index do |pre, i|
         lines[i].each_with_index do |(type, n), j|
-          text = (n || ' ').to_s
-          text << "\n"
-
           span = Nokogiri::XML::Node.new(TAGS[type], table)
           span['style'] = 'display: block'
-          span.children = Nokogiri::XML::Text.new(text, table)
+          span.children = Nokogiri::XML::Text.new("#{n || ' '}\n", table)
 
           pre << span
         end
